@@ -12,6 +12,7 @@ end
 post '/call' do
 	twiml = Twilio::TwiML::Response.new do |r|
 		r.Reject
+	end
 end
 
 get '/' do
