@@ -10,7 +10,10 @@ post '/sms' do
 end
 
 post '/call' do
-	"<Response><Reject/><Response>"
+	twiml = Twilio::TwiML::Response.new do |r|
+		r.Reject
+	end
+	twiml.text
 end
 
 get '/' do
