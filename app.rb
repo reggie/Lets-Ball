@@ -10,7 +10,7 @@ post '/sms' do
 			r.Message "#{messageTokens[1]} was added."
 		end
 	else
-		twiml = Twillio::TwiML::Response.new do |r|
+		twiml = Twilio::TwiML::Response.new do |r|
 			r.Message "Invalid input sent. Text -h for help."
 		end
 	end
