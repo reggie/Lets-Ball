@@ -14,7 +14,7 @@ post '/sms' do
 			r.Message "Invalid input sent. Text -h for help."
 		end
 	end
-	twiml.txt
+	twiml.text
 end
 
 post '/call' do
