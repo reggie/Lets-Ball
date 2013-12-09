@@ -3,9 +3,9 @@ require 'twilio-ruby'
 require 'sinatra'
 
 post '/sms' do
-	@phone_numver = params[:From]
+	sender = params[:From]
 	twiml = Twilio::TwiML::Response.new do |r|
-		r.Message "#{@phone_number}"
+		r.Message "#{sender} texed me."
 	end
 	twiml.text
 end
