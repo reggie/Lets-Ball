@@ -5,7 +5,7 @@ require 'sinatra'
 post '/sms' do
 	@phone_numver = params[:phone_number]
 	twiml = Twilio::TwiML::Response.new do |r|
-		r.Message "That didn't work"
+		r.Message params
 	end
 	twiml.text
 end
