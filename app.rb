@@ -3,11 +3,17 @@ require 'twilio-ruby'
 require 'sinatra'
 
 post '/sms' do
-	sender = params[:From]
-	twiml = Twilio::TwiML::Response.new do |r|
-		r.Message "#{sender} texed me."
+	messageTokens = params[:Body].split
+	case messageTokens[0]
+	when "-a"
+		twiml = Twilio::TwiML::Response.new do |r|
+			r.Message "#{messageTokens[1]} was added."
+		end
+	else
+		twiml = Twillio::TwiML::Response.new do |r|
+			r.Message "Invalid input sent. Text -h for help."
 	end
-	twiml.text
+	twiml.txt
 end
 
 post '/call' do
