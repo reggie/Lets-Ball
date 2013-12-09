@@ -12,6 +12,7 @@ post '/sms' do
 	else
 		twiml = Twillio::TwiML::Response.new do |r|
 			r.Message "Invalid input sent. Text -h for help."
+		end
 	end
 	twiml.txt
 end
