@@ -3,9 +3,9 @@ require 'twilio-ruby'
 require 'sinatra'
 
 post '/sms' do
-	@phone_numver = params[:phone_number]
+	@phone_numver = params[:From]
 	twiml = Twilio::TwiML::Response.new do |r|
-		r.Message params
+		r.Message "#{@phone_number}"
 	end
 	twiml.text
 end
