@@ -19,7 +19,7 @@ post '/sms' do
 		end
 	when "-h"
 		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "Valid Inputs:\n\tAdd\n\t-a <name>\n\tRemove\n\t-r <name>\n\tBall\n\t-b <location> <time>"
+			r.Message "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
 		end
 	else
 		twiml = Twilio::TwiML::Response.new do |r|
