@@ -16,14 +16,8 @@ post '/sms' do
 			end
 		end
 	when "-r"
-		if messageTokens[1] == nil
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "No name was given."
-			end
-		else
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "#{messageTokens[1]} was removed."
-			end
+		twiml = Twilio::TwiML::Response.new do |r|
+			r.Message "#{messageTokens[1]} was removed."
 		end
 	when "-b"
 		if messageTokens[2] == nil 
