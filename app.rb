@@ -6,16 +6,34 @@ post '/sms' do
 	messageTokens = params[:Body].split
 	case messageTokens[0]
 	when "-a"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "#{messageTokens[1]} was added."
+		if messageTokens[1] == nil
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "No name was given."
+			end
+		else
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "#{messageTokens[1]} was added."
+			end
 		end
 	when "-r"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "#{messageTokens[1]} was removed."
+		if messageTokens[1] == nil
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "No name was given."
+			end
+		else
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "#{messageTokens[1]} was removed."
+			end
 		end
 	when "-b"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+		if messageTokens[1] === nil
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "The ball request was not formatted properly."
+			end
+		else
+			twiml = Twilio::TwiML::Response.new do |r|
+				r.Message "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+			end
 		end
 	when "-h"
 		twiml = Twilio::TwiML::Response.new do |r|
