@@ -26,7 +26,7 @@ post '/sms' do
 			end
 		end
 	when "-b"
-		if messageTokens[1] === nil
+		if messageTokens[2] == nil 
 			twiml = Twilio::TwiML::Response.new do |r|
 				r.Message "The ball request was not formatted properly."
 			end
