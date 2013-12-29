@@ -26,7 +26,7 @@ post '/sms' do
 		message =  "Invalid input sent. Text -h for help."
 	end
 	twiml = Twilio::TwiML::Response.new do |r|
-		r.Message message
+		r.Message "#{message}"
 	end
 	twiml.text
 end
