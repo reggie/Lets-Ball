@@ -4,41 +4,29 @@ require 'sinatra'
 
 post '/sms' do
 	messageTokens = params[:Body].split
-	case messageTokens[0]
-	when "-a"
-		if messageTokens[1] == nil
-			twiml = Twilio::TwiML::Response.new do |r|
+	twiml = Twilio::TwiML::Response.new do |r|
+		case messageTokens[0]
+		when "-a"
+			if messageTokens[1] == nil
 				r.Message "No name was given."
-			end
-		else
-			twiml = Twilio::TwiML::Response.new do |r|
+			else
 				r.Message "#{messageTokens[1]} was added."
 			end
-		end
-	when "-r"
-		twiml = Twilio::TwiML::Response.new do |r|
+		when "-r"
 			r.Message "#{messageTokens[1]} was removed."
-		end
-	when "-b"
-		if messageTokens[2] == nil 
-			twiml = Twilio::TwiML::Response.new do |r|
+		when "-b"
+			if messageTokens[2] == nil 
 				r.Message "The ball request was not formatted properly."
-			end
-		else
-			twiml = Twilio::TwiML::Response.new do |r|
+			else
 				r.Message "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 			end
-		end
-	when "-h"
-		twiml = Twilio::TwiML::Response.new do |r|
+		when "-h"
 			r.Message "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
-		end
-	else
-		twiml = Twilio::TwiML::Response.new do |r|
+		else
 			r.Message "Invalid input sent. Text -h for help."
 		end
+		twiml.text
 	end
-	twiml.text
 end
 
 post '/call' do
