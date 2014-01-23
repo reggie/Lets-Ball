@@ -33,6 +33,11 @@ post '/sms' do
 		twiml = Twilio::TwiML::Response.new do |r|
 			r.Message "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
 		end
+	when "-T"
+		message = "This is just a mixtape"
+		twiml = Twilio::TwiML::Response.new do |r|
+			r.Message message.to_s
+		end
 	else
 		twiml = Twilio::TwiML::Response.new do |r|
 			r.Message "Invalid input sent. Text -h for help."
