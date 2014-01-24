@@ -15,7 +15,7 @@ post '/sms' do
 			message = "#{messageTokens[1]} was added."
 		end
 	when "-r"
-		message = "#{messageTokens[1]} was removed."
+		message = "You were removed."
 	when "-b"
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
@@ -23,7 +23,13 @@ post '/sms' do
 			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-h"
-		message = "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
+		message = "Valid Inputs:
+							\tAdd Baller
+							\t-a <name>
+							\tRemove Baller
+							\t-r <name>
+							\tBall Request
+							\t-b <location> <time>"
 	else
 		message = "Invalid input sent. Text -h for help."
 	end
