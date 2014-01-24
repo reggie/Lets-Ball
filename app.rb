@@ -4,44 +4,33 @@ require 'sinatra'
 
 post '/sms' do
 	messageTokens = params[:Body].split
+	message = ""
+
+	#Cases for different options
 	case messageTokens[0]
 	when "-a"
 		if messageTokens[1] == nil
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "No name was given."
-			end
+			message = "No name was given."
 		else
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "#{messageTokens[1]} was added."
-			end
+			message = "#{messageTokens[1]} was added."
 		end
 	when "-r"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "#{messageTokens[1]} was removed."
-		end
+		message = "#{messageTokens[1]} was removed."
 	when "-b"
 		if messageTokens[2] == nil 
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "The ball request was not formatted properly."
-			end
+			message = "The ball request was not formatted properly."
 		else
-			twiml = Twilio::TwiML::Response.new do |r|
-				r.Message "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
-			end
+			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-h"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
-		end
-	when "-T"
-		message = "This is just a mixtape"
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message message.to_s
-		end
+		message = "Valid Inputs:\n\tAdd Baller\n\t-a <name>\n\tRemove Baller\n\t-r <name>\n\tBall Request\n\t-b <location> <time>"
 	else
-		twiml = Twilio::TwiML::Response.new do |r|
-			r.Message "Invalid input sent. Text -h for help."
-		end
+		message = "Invalid input sent. Text -h for help."
+	end
+	
+	#Sends text response
+	twiml = Twilio::TwiML::Response.new do |r|
+		r.Message message.to_s
 	end
 	twiml.text
 end
