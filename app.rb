@@ -49,7 +49,7 @@ post '/sms' do
 	when "-T"
 		message = "Collections\n" +
 							"===========\n"# +
-#							"#{db.collection_names}"
+							"#{db.collection_names}"
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
@@ -61,7 +61,7 @@ post '/sms' do
 	twiml.text
 end
 
-post '/call' 
+post '/call' do
 	#Makes app hangup if called
 	twiml = Twilio::TwiML::Response.new do |r|
 		r.Reject
