@@ -92,6 +92,15 @@ post '/sms' do
 							"===========\n" +
 							"#{db.collection_names}"
 =end
+		if sid == 'AC6ba28d69bb39b855edc67e1be3b6166d'
+			if auth_token == '13744a3ad8043a142dc78f03e5a27740'
+				message = "everything checks out"
+			else
+				message = "auth is wrong"
+			end
+		else
+			message = "sid is wrong"
+		end
 		@sms = @client.account.messages.get(params[:MessageSid])
 		message = "#{params[:MessageSid]}"	
 		message << @sms.body
