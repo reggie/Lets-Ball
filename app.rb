@@ -48,6 +48,18 @@ post '/sms' do
 		else
 			message = "You are not in the database."
 		end
+	when "-un"
+		if exists
+			ballers.update({"number" => number}, {"name" => messageTokens[1]})
+			message = "You name has been updated to #{messageTokens[1]}."
+		else
+			message = "You are not in the database."
+		end
+	when "-l"
+		ballers.find.each do |doc|
+			message << doc.['name'] + "\n"
+		end		
+		message << "\r"
 	when "-b"	#Send out a ball request
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
