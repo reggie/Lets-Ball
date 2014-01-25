@@ -14,7 +14,7 @@ def get_connection
 end
 
 db = get_connection
-ballers = db.collection("Ballers")
+ballers = db.create_collection('Ballers')
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
