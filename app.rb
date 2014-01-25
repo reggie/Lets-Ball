@@ -43,7 +43,7 @@ post '/sms' do
 		end
 	when "-r" #Remove youself from the database
 		if exists
-			ballers.remove({"number"= > number})
+			ballers.remove({"number"=> number})
 			message = "You were removed from the database."
 		else
 			message = "You are not in the database."
