@@ -28,7 +28,7 @@ post '/sms' do
 		if messageTokens[1] == nil
 			message = "No name was given."
 		else
-			if (ballers.find({"number" => number}).size() > 0)
+			if ballers.find({"number" => number})
 				message = "You are already in the database"
 			else
 				message = "#{messageTokens[1]} was added."
