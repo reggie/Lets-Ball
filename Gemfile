@@ -5,3 +5,5 @@ gem "heroku"
 
 gem "hpricot"
 gem "twilio-ruby"
+
+gem "mongo"

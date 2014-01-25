@@ -1,6 +1,19 @@
 require 'rubygems'
 require 'twilio-ruby'
+require 'mongo'	
+require 'uri'
 require 'sinatra'
+
+def get_connection
+	return @db_connection if @db_connection
+	db = URI.parse(ENV['MONGOHQ_URL'])
+	db_name = db.path.gsub(/^\//, '')
+	@db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
+	@db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.password.nil?)
+	return	@db_connection
+end
+
+db = get_connection
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
@@ -31,6 +44,10 @@ post '/sms' do
 							"\t-r <name>\n"    +
 							"\tBall Request\n" +
 							"\t-b <location> <time>"
+	when "-T"
+		message = "Collections\n" +
+							"===========\n" +
+							"#{db.collection_names}"
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
