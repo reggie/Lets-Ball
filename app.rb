@@ -16,8 +16,9 @@ end
 
 db = get_connection
 ballers = db.create_collection('Ballers')
-authtoken = ENV['AUTH_TOKEN']
+auth_token = ENV['AUTH_TOKEN']
 sid = ENV['SID']
+@client = Twilio::REST::Client.new sid, auth_token
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
@@ -91,7 +92,7 @@ post '/sms' do
 							"===========\n" +
 							"#{db.collection_names}"
 =end
-		message = "#{authtoken}"		
+		message = "#{@client.account.messsages.get(params[:MessageSid]).date_sent}"	
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
