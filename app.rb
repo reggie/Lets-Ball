@@ -57,7 +57,7 @@ post '/sms' do
 		end
 	when "-l"
 		ballers.find.each do |doc|
-			message << doc.['name'] + "\n"
+			message << doc['name'] + "\n"
 		end		
 		message << "\r"
 	when "-b"	#Send out a ball request
