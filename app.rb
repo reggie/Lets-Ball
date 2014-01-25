@@ -3,6 +3,7 @@ require 'twilio-ruby'
 require 'mongo'	
 require 'uri'
 require 'sinatra'
+require 'yaml'
 
 def get_connection
 	return @db_connection if @db_connection
@@ -15,6 +16,8 @@ end
 
 db = get_connection
 ballers = db.create_collection('Ballers')
+authtoken = ENV['AUTH_TOKEN']
+sid = ENV['SID']
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
@@ -58,8 +61,12 @@ post '/sms' do
 	when "-l"
 		ballers.find.each do |doc|
 			message << doc['name'] + "\n"
-		end		
-		message << "\r"
+		end	
+		if message.empty?
+			message = "The database is currently empty."
+		else	
+			message << "\r"
+		end
 	when "-b"	#Send out a ball request
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
@@ -67,17 +74,24 @@ post '/sms' do
 			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-h"	#Ask for help 
-		message = "Valid Inputs:\n"  +
-							"\tAdd Baller\n"   +
-							"\t-a <name>\n"    +
-							"\tRemove Baller\n"+
-							"\t-r <name>\n"    +
-							"\tBall Request\n" +
+		message = "Valid Inputs:\n" 		 +
+							"\tAdd Baller\n"   		 +
+							"\t-a <name>\n"   		 +
+							"\tUpdate Name\n"			 +
+							"\t-un <name>"				 +
+							"\tRemove Baller\n"	 	 +
+							"\t-r <name>\n"    		 +
+							"\tList all Ballers\n" +
+							"\t-l\n"							 +
+							"\tBall Request\n"		 +
 							"\t-b <location> <time>"
 	when "-T"
+=begin
 		message = "Collections\n" +
 							"===========\n" +
 							"#{db.collection_names}"
+=end
+		message = "#{authtoken}"		
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
