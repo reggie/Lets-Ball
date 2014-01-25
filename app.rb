@@ -28,12 +28,11 @@ post '/sms' do
 		if messageTokens[1] == nil
 			message = "No name was given."
 		else
-			#if
-			message = ballers.find({"number" => number}).count()
-			#	message = "You are already in the database"
-			#else
-			#	message = "#{messageTokens[1]} was added."
-			#end
+			if ballers.find({"number" => number}).count() != 0
+				message = "You are already in the database"
+			else
+				message = "#{messageTokens[1]} was added."
+			end
 		end
 	when "-r" #Remove youself from the database
 		message = "You were removed."
