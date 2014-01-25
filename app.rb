@@ -31,6 +31,7 @@ post '/sms' do
 			if ballers.find({"number" => number}).count() != 0
 				message = "You are already in the database"
 			else
+				ballers.insert({"number" => number, "name" => messageTokens[1], "Balling" => "N"})
 				message = "#{messageTokens[1]} was added."
 			end
 		end
