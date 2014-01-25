@@ -29,7 +29,7 @@ post '/sms' do
 			message = "No name was given."
 		else
 			#if
-			message = ballers.find({"number" => number}).size()
+			message = ballers.find({"number" => number})
 			#	message = "You are already in the database"
 			#else
 			#	message = "#{messageTokens[1]} was added."
