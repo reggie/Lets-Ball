@@ -21,22 +21,33 @@ post '/sms' do
 	messageTokens = params[:Body].split
 	number = params[:From]
 	message = ""
+	exists = false
 
+	#Checks if the number exsts in the database already
+	if ballers.find({"number" => number}).count != 0
+		exists = true
+	end	
+		
 	#Cases for different options
 	case messageTokens[0]
 	when "-a"	#Add yourself to the database
 		if messageTokens[1] == nil
 			message = "No name was given."
 		else
-			if ballers.find({"number" => number}).count() != 0
-				message = "You are already in the database"
+			if exists
+				message = "You are already in the database."
 			else
 				ballers.insert({"number" => number, "name" => messageTokens[1], "Balling" => "N"})
 				message = "#{messageTokens[1]} was added."
 			end
 		end
 	when "-r" #Remove youself from the database
-		message = "You were removed."
+		if exists
+			ballers.remove({"number"= > number})
+			message = "You were removed from the database."
+		else
+			message = "You are not in the database."
+		end
 	when "-b"	#Send out a ball request
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
