@@ -92,7 +92,8 @@ post '/sms' do
 							"===========\n" +
 							"#{db.collection_names}"
 =end
-		message = "#{@client.account.messsages.get(params[:MessageSid]).date_sent}"	
+		@sms = @client.account.messages.get(params[:MessageSid])
+		message = "#{@sms.date_sent} date"	
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
