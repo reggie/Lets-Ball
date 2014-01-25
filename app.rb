@@ -101,9 +101,9 @@ post '/sms' do
 		else
 			message = "sid is wrong"
 		end
-		@sms = @client.account.messages.get(params[:MessageSid])
-		message = "#{params[:MessageSid]}"	
-		message << @sms.body
+	#	@sms = @client.account.messages.get(params[:MessageSid])
+#		message = "#{params[:MessageSid]}"	
+	#	message << @sms.body
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
