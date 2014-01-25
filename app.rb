@@ -4,6 +4,7 @@ require 'mongo'
 require 'uri'
 require 'sinatra'
 
+=begin
 def get_connection
 	return @db_connection if @db_connection
 	db = URI.parse(ENV['MONGOHQ_URL'])
@@ -14,6 +15,7 @@ def get_connection
 end
 
 db = get_connection
+=end
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
@@ -46,8 +48,8 @@ post '/sms' do
 							"\t-b <location> <time>"
 	when "-T"
 		message = "Collections\n" +
-							"===========\n" +
-							"#{db.collection_names}"
+							"===========\n"# +
+#							"#{db.collection_names}"
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
