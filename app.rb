@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'twilio-ruby'
-require 'mongo'	
-require 'uri'
+#require 'mongo'	
+#require 'uri'
 require 'sinatra'
 
 =begin
