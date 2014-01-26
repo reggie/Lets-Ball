@@ -18,7 +18,7 @@ db = get_connection
 ballers = db.create_collection('Ballers')
 auth_token = ENV['AUTH_TOKEN']
 sid = ENV['SID']
-@client = Twilio::REST::Client.new sid, auth_token
+client = Twilio::REST::Client.new sid, auth_token
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
