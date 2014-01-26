@@ -72,7 +72,10 @@ post '/sms' do
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
 		else
-			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+			name = ballers.findOne({"number" => number})["name"]
+			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
+			#message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+			message = request
 		end
 	when "-h"	#Ask for help 
 		message = "Valid Inputs:\n" 		 +
