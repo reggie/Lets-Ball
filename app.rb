@@ -3,7 +3,7 @@ require 'twilio-ruby'
 require 'mongo'	
 require 'uri'
 require 'sinatra'
-require 'yaml'
+require 'date'
 
 def get_connection
 	return @db_connection if @db_connection
@@ -88,8 +88,8 @@ post '/sms' do
 							"\t-b <location> <time>"
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
-		message = "#{sms.date_sent}"	
-		#message << 
+		message = "#{sms.date_sent} - "	
+		message << DateTime.now
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
