@@ -72,7 +72,8 @@ post '/sms' do
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
 		else
-			name = ballers.find({"number" => number}).inspect['name']
+			doc = ballers.find({"number" => number}).to_a
+			name = doc[0]['name']
 			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
 			#message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 			message = request
