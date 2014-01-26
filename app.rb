@@ -41,7 +41,7 @@ post '/sms' do
 			if exists
 				message = "You are already in the database."
 			else
-				ballers.insert({"number" => number, "name" => messageTokens[1], "Balling" => "N"})
+				ballers.insert({"number" => number, "name" => messageTokens[1], "balling" => "n"})
 				message = "#{messageTokens[1]} was added."
 			end
 		end
@@ -54,7 +54,7 @@ post '/sms' do
 		end
 	when "-un"
 		if exists
-			ballers.update({"number" => number}, {"name" => messageTokens[1]})
+			ballers.update({"number" => number}, {"number" => number, "name" => messageTokens[1], "balling" => "n"})
 			message = "You name has been updated to #{messageTokens[1]}."
 		else
 			message = "You are not in the database."
@@ -77,6 +77,8 @@ post '/sms' do
 			#message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 			message = request
 		end
+	when "-c"
+		ballers.remove
 	when "-h"	#Ask for help 
 		message = "Valid Inputs:\n" 		 +
 							"\tAdd Baller\n"   		 +
