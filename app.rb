@@ -87,7 +87,7 @@ post '/sms' do
 							"\tBall Request\n"		 +
 							"\t-b <location> <time>"
 	when "-T"
-		sms = @client.account.messages.get(params[:MessageSid])
+		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{params[:MessageSid]}"	
 		message << sms.body
 	else	#Default case to alert improper usage
