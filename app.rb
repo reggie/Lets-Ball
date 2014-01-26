@@ -88,8 +88,8 @@ post '/sms' do
 							"\t-b <location> <time>"
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
-		message = "#{params[:MessageSid]}"	
-		message << sms.body
+		message = "#{sms.date_sent}"	
+		#message << 
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
