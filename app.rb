@@ -16,6 +16,7 @@ end
 
 db = get_connection
 ballers = db.create_collection('Ballers')
+events = db.create_collection
 auth_token = ENV['AUTH_TOKEN']
 sid = ENV['SID']
 client = Twilio::REST::Client.new sid, auth_token
@@ -74,23 +75,34 @@ post '/sms' do
 		else
 			name = ballers.find({"number" => number}).to_a[0]["name"]
 			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
-			#message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
-			message = request
+			events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
+			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-c"
+		ballers.find({"balling" => "y"}).each do |doc|
+			message << doc['name'] + "\n"	
+		end
+		if message.empty?
+			message = "No ballers have confirmed attendence yet."
+		else
+			message << "\r"
+		end
+	when "-C"
 		ballers.remove
 	when "-h"	#Ask for help 
-		message = "Valid Inputs:\n" 		 +
-							"\tAdd Baller\n"   		 +
-							"\t-a <name>\n"   		 +
-							"\tUpdate Name\n"			 +
-							"\t-un <name>"				 +
-							"\tRemove Baller\n"	 	 +
-							"\t-r <name>\n"    		 +
-							"\tList all Ballers\n" +
-							"\t-l\n"							 +
-							"\tBall Request\n"		 +
-							"\t-b <location> <time>"
+		message = "Valid Inputs:\n" 					 +
+							"\tAdd Baller\n"   					 +
+							"\t-a <name>\n"   					 +
+							"\tUpdate Name\n"						 +
+							"\t-un <name>"							 +
+							"\tRemove Baller\n"	 				 +
+							"\t-r <name>\n"    					 +
+							"\tList all Ballers\n"       +
+							"\t-l\n"							       +
+							"\tBall Request\n"		       +
+							"\t-b <location> <time>\n"   +
+							"\tList confirmed Ballers\n" +
+							"\t-c\n"
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{sms.date_sent} - "	
