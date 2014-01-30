@@ -26,7 +26,7 @@ post '/sms' do
 	messageTokens = params[:Body].split
 	number = params[:From]
 	message = ""
-	date = DateTime.now.
+	date = DateTime.now
 	date = date.strftime("%m/%d/%y")
 	exists = false
 	empty = true
