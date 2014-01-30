@@ -92,16 +92,17 @@ post '/sms' do
 			else
 				events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
 			end
-			name = ballers.find({"number" => number}).to_a[0]["name"]
-			ballers.find().each do |doc| 
-				if doc['number'] != number
-					text = client.account.messages.create(
-						:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock.\nText \"-y\" to confirm or \"-n\" to deny.",
-						:to => doc['number'],
-						:from => "+12014686232")
-				end
-			end
 			if message.empty?
+				name = ballers.find({"number" => number}).to_a[0]["name"]
+				ballers.find().each do |doc| 
+					if doc['number'] != number
+						text = client.account.messages.create(
+							:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock.\nText \"-y\" to confirm or \"-n\" to deny.",
+							:to => doc['number'],
+							:from => "+12014686232")
+					end
+				end
+			
 				ballers.update({}, { "$set" => {"balling" => "-"} })
 				ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
 				message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
