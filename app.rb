@@ -63,7 +63,7 @@ post '/sms' do
 		end
 	when "-un"
 		if exists
-			ballers.update({"number" => number}, { $set: {"name" => messageTokens[1]} })
+			ballers.update({"number" => number}, { "$set" => {"name" => messageTokens[1]} })
 			#ballers.update({"number" => number}, {"number" => number, "name" => messageTokens[1], "balling" => "n"})
 			message = "You name has been updated to #{messageTokens[1]}."
 		else
