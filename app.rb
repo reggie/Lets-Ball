@@ -82,7 +82,7 @@ post '/sms' do
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
 		else
-			if events.find().count != 0
+			if !empty
 				if events.find({"date" => date}).to_a[0]["date"] == date
 					message = "There is already a balling request for today."
 				else
@@ -102,8 +102,46 @@ post '/sms' do
 				end
 			end
 			if message.empty?
+				ballers.update({}, { "$set" => {"balling" => "-"} })	
 				message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 			end
+		end
+	when "-ub"
+		if messageTokens[2] == nil
+			message = "The update request was not formatted properly"
+		else
+			if empty 
+				message = "There is no active ball request"
+			else 
+				if events.find({"creator" => number}).count != 0
+					events.update({"creator" => number}, {"location" => messageTokens[1], "time" => messageTokens[2]})
+					message = "The event was updated."
+					ballers.find().each do |doc|
+						if doc['number'] != number
+							text = client.account.messages.create(
+								:body => "The event was update to: #{messageTokens[1]} at #{messageTokens[2]}",
+								:to => doc['number'],
+								:from => number)
+						end
+					end
+				else
+					message = "You are not the creator of the ball request."
+				end
+			end
+		end
+	when "-y"
+		if !empty
+			ballers.update({"number" => number}, {"balling" => "y"})
+			message = "Response stored."
+		else 
+			message = "There is no request active right now."
+		end
+	when "-n"
+		if !empty
+			ballers.update({"number" => number}, {"balling" => "n"})
+			message = "Response"
+		else
+			message = "There is no ball request active right now."
 		end
 	when "-c"
 		ballers.find({"balling" => "y"}).each do |doc|
@@ -116,6 +154,7 @@ post '/sms' do
 		end
 	when "-C"
 		ballers.remove
+		events.remove
 	when "-h"	#Ask for help 
 		message = "Valid Inputs:\n" 					 +
 							"\tAdd Baller\n"   					 +
@@ -131,9 +170,7 @@ post '/sms' do
 							"\tList confirmed Ballers\n" +
 							"\t-c\n"
 	when "-T"
-		sms = client.account.messages.get(params[:MessageSid])
-		message = "#{sms.date_sent} - "	
-		message << date
+		x = 5
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
