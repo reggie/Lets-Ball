@@ -85,7 +85,6 @@ post '/sms' do
 			if events.find().count != 0
 				if events.find({"date" => date}).to_a[0]["date"] == date
 					message = "There is already a balling request for today."
-					break
 				else
 					events.remove
  					events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
@@ -102,7 +101,9 @@ post '/sms' do
 						:from => number)
 				end
 			end
-			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+			if message.empty?
+				message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
+			end
 		end
 	when "-c"
 		ballers.find({"balling" => "y"}).each do |doc|
