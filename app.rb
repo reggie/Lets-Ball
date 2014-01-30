@@ -102,7 +102,8 @@ post '/sms' do
 				end
 			end
 			if message.empty?
-				ballers.update({}, { "$set" => {"balling" => "-"} })	
+				ballers.update({}, { "$set" => {"balling" => "-"} })
+				ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
 				message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 			end
 		end
@@ -114,7 +115,7 @@ post '/sms' do
 				message = "There is no active ball request"
 			else 
 				if events.find({"creator" => number}).count != 0
-					events.update({"creator" => number}, {"location" => messageTokens[1], "time" => messageTokens[2]})
+					events.update({"creator" => number}, {"$set" => {"location" => messageTokens[1], "time" => messageTokens[2]} })
 					message = "The event was updated."
 					ballers.find().each do |doc|
 						if doc['number'] != number
@@ -131,15 +132,15 @@ post '/sms' do
 		end
 	when "-y"
 		if !empty
-			ballers.update({"number" => number}, {"balling" => "y"})
+			ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
 			message = "Response stored."
 		else 
 			message = "There is no request active right now."
 		end
 	when "-n"
 		if !empty
-			ballers.update({"number" => number}, {"balling" => "n"})
-			message = "Response"
+			ballers.update({"number" => number}, {"$set" => {"balling" => "n"} })
+			message = "Response stored."
 		else
 			message = "There is no ball request active right now."
 		end
@@ -156,18 +157,20 @@ post '/sms' do
 		ballers.remove
 		events.remove
 	when "-h"	#Ask for help 
-		message = "Valid Inputs:\n" 					 +
-							"\tAdd Baller\n"   					 +
-							"\t-a <name>\n"   					 +
-							"\tUpdate Name\n"						 +
-							"\t-un <name>"							 +
-							"\tRemove Baller\n"	 				 +
-							"\t-r <name>\n"    					 +
-							"\tList all Ballers\n"       +
-							"\t-l\n"							       +
-							"\tBall Request\n"		       +
-							"\t-b <location> <time>\n"   +
-							"\tList confirmed Ballers\n" +
+		message = "Valid Inputs:\n"						+
+							"\tAdd Baller\n"						+
+							"\t-a <name>\n"							+
+							"\tUpdate Name\n"						+
+							"\t-un <name>\n"						+
+							"\tRemove Baller\n"					+
+							"\t-r <name>\n"							+
+							"\tList all Ballers\n"			+
+							"\t-l\n"										+
+							"\tBall Request\n"					+
+							"\t-b <location> <time>\n"	+
+							"\tUpdate Ball Request\n"		+
+							"\t-ub <location> <time>\n"	+
+							"\tList confirmed Ballers\n"+
 							"\t-c\n"
 	when "-T"
 		x = 5
