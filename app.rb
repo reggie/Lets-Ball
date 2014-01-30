@@ -26,12 +26,19 @@ post '/sms' do
 	messageTokens = params[:Body].split
 	number = params[:From]
 	message = ""
+	date = DateTime.now
 	exists = false
+	empty = true
 
 	#Checks if the number exsts in the database already
 	if ballers.find({"number" => number}).count != 0
 		exists = true
 	end	
+
+	#Checks if the events database is empty
+	if events.find().count != 0
+		empty = false
+	end
 		
 	#Cases for different options
 	case messageTokens[0]
@@ -73,6 +80,7 @@ post '/sms' do
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
 		else
+			
 			name = ballers.find({"number" => number}).to_a[0]["name"]
 			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
 			events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
@@ -106,7 +114,7 @@ post '/sms' do
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{sms.date_sent} - "	
-		message << DateTime.now.to_s
+		message << date.strftime("%m/%d/%y")
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
