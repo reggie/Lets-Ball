@@ -83,7 +83,7 @@ post '/sms' do
 		else
 			name = ballers.find({"number" => number}).to_a[0]["name"]
 			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
-			events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date)
+			events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
 			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-c"
@@ -114,7 +114,7 @@ post '/sms' do
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{sms.date_sent} - "	
-						message << date
+		message << date
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
