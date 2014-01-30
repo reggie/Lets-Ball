@@ -113,7 +113,7 @@ post '/sms' do
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{sms.date_sent} - "	
-		message << date.strftime("%m/%d/%y") 
+		message << date.strftime("%m/%d/%y") + "#{date.zone}"
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
