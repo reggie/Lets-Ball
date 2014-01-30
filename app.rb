@@ -16,7 +16,7 @@ end
 
 db = get_connection
 ballers = db.create_collection('Ballers')
-events = db.create_collection
+events = db.create_collection('Events')
 auth_token = ENV['AUTH_TOKEN']
 sid = ENV['SID']
 client = Twilio::REST::Client.new sid, auth_token
@@ -26,7 +26,7 @@ post '/sms' do
 	messageTokens = params[:Body].split
 	number = params[:From]
 	message = ""
-	#date = DateTime.now
+	date = DateTime.now
 	exists = false
 	empty = true
 
@@ -113,7 +113,7 @@ post '/sms' do
 	when "-T"
 		sms = client.account.messages.get(params[:MessageSid])
 		message = "#{sms.date_sent} - "	
-		message << "r" #date.strftime("%m/%d/%y") 
+		message << date.strftime("%m/%d/%y") 
 	else	#Default case to alert improper usage
 		message = "Invalid input sent. Text -h for help."
 	end
