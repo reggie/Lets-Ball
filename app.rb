@@ -50,7 +50,7 @@ post '/sms' do
 			if exists
 				message = "You are already in the database."
 			else
-				ballers.insert({"number" => number, "name" => messageTokens[1], "balling" => "n"})
+				ballers.insert({"number" => number, "name" => messageTokens[1], "balling" => "-"})
 				message = "#{messageTokens[1]} was added."
 			end
 		end
@@ -63,7 +63,8 @@ post '/sms' do
 		end
 	when "-un"
 		if exists
-			ballers.update({"number" => number}, {"number" => number, "name" => messageTokens[1], "balling" => "n"})
+			ballers.update({"number" => number}, { $set: {"name" => messageTokens[1]} })
+			#ballers.update({"number" => number}, {"number" => number, "name" => messageTokens[1], "balling" => "n"})
 			message = "You name has been updated to #{messageTokens[1]}."
 		else
 			message = "You are not in the database."
@@ -81,9 +82,26 @@ post '/sms' do
 		if messageTokens[2] == nil 
 			message = "The ball request was not formatted properly."
 		else
+			if events.find().count != 0
+				if events.find({"date" => date}).to_a[0]["date"] == date
+					message = "There is already a balling request for today."
+					break
+				else
+					events.remove
+ 					events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
+				end
+			else
+				events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
+			end
 			name = ballers.find({"number" => number}).to_a[0]["name"]
-			request = "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
-			events.insert({"location" => messageTokens[1], "time" => messageTokens[2], "creator" => number, "date" => date})
+			ballers.find().each do |doc| 
+				if doc['number'] != number
+					text = client.account.messages.create(
+						:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock."
+						:to => doc['number']
+						:from => number)
+				end
+			end
 			message = "Ball request: #{messageTokens[1]} at #{messageTokens[2]} - created."
 		end
 	when "-c"
