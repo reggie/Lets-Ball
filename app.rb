@@ -98,7 +98,7 @@ post '/sms' do
 					text = client.account.messages.create(
 						:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock.",
 						:to => doc['number'],
-						:from => "+120214676232")
+						:from => "+12014686232")
 				end
 			end
 			if message.empty?
