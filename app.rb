@@ -96,7 +96,7 @@ post '/sms' do
 			ballers.find().each do |doc| 
 				if doc['number'] != number
 					text = client.account.messages.create(
-						:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock.",
+						:body => "#{name} wants to play basketball at #{messageTokens[1]} at #{messageTokens[2]} o'clock.\nText \"-y\" to confirm or \"-n\" to deny.",
 						:to => doc['number'],
 						:from => "+12014686232")
 				end
