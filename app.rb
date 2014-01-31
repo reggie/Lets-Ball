@@ -17,8 +17,8 @@ end
 configure do
 	#The monogo connection
 	$db = get_connection
-	baller = db.create_collection('Ballers')
-	events = db.create_collection('Events')
+	baller = $db.create_collection('Ballers')
+	events = $db.create_collection('Events')
 	#The Twilio client connection
 	auth_token = ENV['AUTH_TOKEN']
 	sid = ENV['SID']
