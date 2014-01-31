@@ -19,8 +19,8 @@ module Database
 	db = get_connection
 
 	#The collections
-	ballers = db.create_collection('Ballers')
-	events = db.create_collection('Events')
+ 	attr_accessor	ballers = db.create_collection('Ballers')
+	attr_accessor events = db.create_collection('Events')
 
 	#The Twilio client connection
 	auth_token = ENV['AUTH_TOKEN']
