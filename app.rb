@@ -17,10 +17,16 @@ end
 module Database
 	#The monogo connection
 	db = get_connection
+	ball = db.create_collection('Ballers')
+	event = db.create_collection('Events')
 
 	#The collections
- 	attr_accessor	ballers = db.create_collection('Ballers')
-	attr_accessor events = db.create_collection('Events')
+	def self.ballers
+		return ball
+	end
+	def self.events
+		return event
+	end
 
 	#The Twilio client connection
 	auth_token = ENV['AUTH_TOKEN']
