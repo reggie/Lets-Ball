@@ -14,6 +14,29 @@ def get_connection
 	return @db_connection
 end
 
+#The monogo connection
+db = get_connection
+
+#The collections
+ballers = db.create_collection('Ballers')
+events = db.create_collection('Events')
+
+#The Twilio client connection
+auth_token = ENV['AUTH_TOKEN']
+sid = ENV['SID']
+client = Twilio::REST::Client.new sid, auth_token
+
+def text message, sender
+	ballers.find().each do |doc| 
+		if doc['number'] != sender
+			text = client.account.messages.create(
+				:body => message,
+				:to => doc['number'],
+				:from => "+12014686232")
+		end
+	end
+end
+
 def add tokens, found, number, empty
 	if tokens[1] == nil
 		return "No name was given."
@@ -168,17 +191,6 @@ def respond type, empty
 	end
 end
 
-def text message, sender
-	ballers.find().each do |doc| 
-		if doc['number'] != sender
-			text = client.account.messages.create(
-				:body => message,
-				:to => doc['number'],
-				:from => "+12014686232")
-		end
-	end
-end
-
 def help
 	return "Valid Inputs:\n"						+
 					"\tAdd Baller\n"						+
@@ -200,18 +212,6 @@ def help
 					"\tList confirmed Ballers\n"+
 					"\t-c\n"
 end
-
-#The monogo connection
-db = get_connection
-
-#The collections
-ballers = db.create_collection('Ballers')
-events = db.create_collection('Events')
-
-#The Twilio client connection
-auth_token = ENV['AUTH_TOKEN']
-sid = ENV['SID']
-client = Twilio::REST::Client.new sid, auth_token
 
 post '/sms' do
 	#Stores the text as tokens split by spaces
