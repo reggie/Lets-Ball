@@ -16,9 +16,9 @@ end
 
 configure do
 	#The monogo connection
-	$db = get_connection
-	ballers = $db.create_collection('Ballers')
-	events = $db.create_collection('Events')
+	db = get_connection
+	$ballers = db.create_collection('Ballers')
+	$events = db.create_collection('Events')
 	#The Twilio client connection
 	auth_token = ENV['AUTH_TOKEN']
 	sid = ENV['SID']
@@ -26,7 +26,7 @@ configure do
 end
 
 def text message, sender
-	$db.ballers.find().each do |doc| 
+	$ballers.find().each do |doc| 
 		if doc['number'] != sender
 			text = $client.account.messages.create(
 				:body => message,
@@ -43,7 +43,7 @@ def add tokens, found, number, empty
 		if found
 			return "You are already in the database."
 		else
-			$db.ballers.insert({"number" => number, "name" => tokens[1], "balling" => "-"})
+			$ballers.insert({"number" => number, "name" => tokens[1], "balling" => "-"})
 			if empty
 				return "#{tokens[1]} was added."
 			else
@@ -56,7 +56,7 @@ end
 
 def remove found, number
 	if found
-		$db.ballers.remove({"number"=> number})
+		$ballers.remove({"number"=> number})
 		return "You were removed from the database."
 	else
 		return "You are not in the database."
@@ -65,7 +65,7 @@ end
 
 def updateName tokens, found, number
 	if found
-		$db.ballers.update({"number" => number}, { "$set" => {"name" => tokens[1]} })
+		$ballers.update({"number" => number}, { "$set" => {"name" => tokens[1]} })
 		return "You name has been updated to #{tokens[1]}."
 	else
 		return "You are not in the database."
@@ -74,7 +74,7 @@ end
 
 def listBallers
 	result = ""
-	$db.ballers.find.each do |doc|
+	$ballers.find.each do |doc|
 		result << doc['name'] + "\n"
 	end	
 	if result.empty?
@@ -87,7 +87,7 @@ end
 
 def listEvents
 	result = ""
-	$db.events.find.each do |doc|
+	$events.find.each do |doc|
 		result << doc['location'] + " at " + doc['time'] +"\n"
 	end	
 	if result.empty?
@@ -100,7 +100,7 @@ end
 
 def listConfirmed
 	result = ""
-	$db.ballers.find({"balling" => "y"}).each do |doc|
+	$ballers.find({"balling" => "y"}).each do |doc|
 		result << doc['name'] + "\n"	
 	end
 	if result.empty?
@@ -126,21 +126,21 @@ def makeEvent tokens, date, number, empty, name
 	else
 		location = flatten(tokens, tokens.length - 1)
 		if !empty
-			if $db.events.find({"date" => date}).to_a[0]["date"] == date
+			if $events.find({"date" => date}).to_a[0]["date"] == date
 				return "There is already a balling request for today."
 			else
-				$db.events.remove
- 				$db.events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
+				$events.remove
+ 				$events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
 			end
 		else
-			$db.events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
+			$events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
 		end
 		if message.empty?
-			name = $db.ballers.find({"number" => number}).to_a[0]["name"]
+			name = $ballers.find({"number" => number}).to_a[0]["name"]
 			message = "#{name} wants to play basketball at #{location} at #{tokens.last} o'clock.\nText \"-y\" to confirm or \"-n\" to deny."
 			text(message, number)
-			$db.ballers.update({}, { "$set" => {"balling" => "-"} })
-			$db.ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
+			$ballers.update({}, { "$set" => {"balling" => "-"} })
+			$ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
 			return "Ball request: #{location} at #{tokens.last} - created."
 		end
 	end
@@ -153,8 +153,8 @@ def updateEvent tokens, number, empty
 		if empty 
 			return "There is no active ball request"
 		else 
-			if $db.events.find({"creator" => number}).count != 0
-				$db.events.update({"creator" => number}, {"$set" => {"location" => tokens[1], "time" => tokens[2]} })
+			if $events.find({"creator" => number}).count != 0
+				$events.update({"creator" => number}, {"$set" => {"location" => tokens[1], "time" => tokens[2]} })
 				message = "The event was updated to: #{tokens[1]} at #{tokens[2]}"
 				text(message, number)
 				return "The event was updated."
@@ -169,9 +169,9 @@ def removeEvent number, empty
 	if empty
 		return "There is no active ball request"
 	else
-		if $db.events.find({"creator" => number}).count != 0
-			$db.events.remove
-			name = $db.ballers.find({"number" => number}).to_a[0]["name"]
+		if $events.find({"creator" => number}).count != 0
+			$events.remove
+			name = $ballers.find({"number" => number}).to_a[0]["name"]
 			message = "The balling event has been cancelled by #{name}."
 			text(message, number)
 			return "The request has been cancelled."
@@ -183,7 +183,7 @@ end
 
 def respond type, empty
 	if !empty
-		$db.ballers.update({"number" => number}, {"$set" => {"balling" => type} })
+		$ballers.update({"number" => number}, {"$set" => {"balling" => type} })
 		return "Response stored."
 	else 
 		return "There is no request active right now."
@@ -231,12 +231,12 @@ post '/sms' do
 	empty = true
 
 	#Checks if the number exsts in the database already
-	if $db.ballers.find({"number" => number}).count != 0
+	if $ballers.find({"number" => number}).count != 0
 		exists = true
 	end	
 
 	#Checks if the events database is empty
-	if $db.events.find().count != 0
+	if $events.find().count != 0
 		empty = false
 	end
 		
@@ -265,8 +265,8 @@ post '/sms' do
 	when "-c"	#List all confirmed ballers
 		message = listConfirmed()
 	when "-C"	#Clears both databases (for emergency cases)
-		$db.ballers.remove
-		$db.events.remove
+		$ballers.remove
+		$events.remove
 	when "-h"	#Ask for help 
 		message	= help()
 	else			#Default case to alert improper usage
