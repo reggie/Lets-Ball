@@ -79,6 +79,8 @@ def listBallers
 	end	
 	if result.empty?
 		return "The database is currently empty."
+	else
+		return result
 	end
 end
 
@@ -89,6 +91,8 @@ def listEvents
 	end	
 	if result.empty?
 		return "The database is currently empty."
+	else
+		return result
 	end
 end
 
@@ -100,7 +104,6 @@ def listConfirmed
 	if result.empty?
 		return "No ballers have confirmed attendence yet."
 	else
-		result << "\r"
 		return result
 	end
 end
