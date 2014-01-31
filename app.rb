@@ -48,7 +48,7 @@ def add tokens, found, number, empty
 				return "#{tokens[1]} was added."
 			else
 				events = listEvents()
-				return "#{tokens[1]} was added.\nThere is an active event: #{events}.Text \"-y\" to confirm, \"-n\" to deny. "	
+				return "#{tokens[1]} was added.\nThere is an active event:\n#{events}Text \"-y\" to confirm, \"-n\" to deny. "	
 			end
 		end
 	end
