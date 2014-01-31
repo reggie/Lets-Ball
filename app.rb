@@ -231,12 +231,12 @@ post '/sms' do
 	empty = true
 
 	#Checks if the number exsts in the database already
-	if ballers.find({"number" => number}).count != 0
+	if $db.ballers.find({"number" => number}).count != 0
 		exists = true
 	end	
 
 	#Checks if the events database is empty
-	if events.find().count != 0
+	if $db.events.find().count != 0
 		empty = false
 	end
 		
