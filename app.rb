@@ -48,7 +48,7 @@ def add tokens, found, number, empty
 				return "#{tokens[1]} was added."
 			else
 				events = listEvents()
-				return "#{tokens[1]} was added.\nThere is an active event: #{events}\r.Text \"-y\" to confirm, \"-n\" to deny. "	
+				return "#{tokens[1]} was added.\nThere is an active event: #{events}.Text \"-y\" to confirm, \"-n\" to deny. "	
 			end
 		end
 	end
@@ -79,9 +79,6 @@ def listBallers
 	end	
 	if result.empty?
 		return "The database is currently empty."
-	else	
-		result << "\r"
-		return result
 	end
 end
 
@@ -92,9 +89,6 @@ def listEvents
 	end	
 	if result.empty?
 		return "The database is currently empty."
-	else	
-		result << "\r"
-		return result
 	end
 end
 
