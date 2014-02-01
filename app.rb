@@ -145,13 +145,16 @@ end
 def updateEvent tokens, number, empty
 	if tokens[2] == nil
 		return "The update request was not formatted properly"
+	elsif tokens.last.to_i == 0
+		return "The time token was not a number"
 	else
 		if empty 
 			return "There is no active ball request"
-		else 
+		else
+			location = flatten(tokens, tokens.length - 1) 
 			if $events.find({"creator" => number}).count != 0
-				$events.update({"creator" => number}, {"$set" => {"location" => tokens[1], "time" => tokens[2]} })
-				message = "The event was updated to: #{tokens[1]} at #{tokens[2]}"
+				$events.update({"creator" => number}, {"$set" => {"location" => location, "time" => tokens.last} })
+				message = "The event was updated to: #{location} at #{tokens.last}"
 				text(message, number)
 				return "The event was updated."
 			else
