@@ -261,7 +261,7 @@ post '/sms' do
 	when "-c"	#List all confirmed ballers
 		message = listConfirmed()
 	when "-C"	#Clears both databases (for emergency cases)
-		$ballers.remove
+	#	$ballers.remove
 		$events.remove
 	when "-h"	#Ask for help 
 		message	= help()
