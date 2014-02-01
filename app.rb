@@ -123,7 +123,7 @@ def makeEvent tokens, date, number, empty
 	else
 		location = flatten(tokens, tokens.length - 1)
 		if !empty
-			if $events.find({"date" => date}).to_a.first["date"] == date
+			if $events.find().to_a[0]["date"] == date
 				return "There is already a balling request for today."
 			else
 				$events.remove
