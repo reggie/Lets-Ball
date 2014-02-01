@@ -118,7 +118,7 @@ end
 def makeEvent tokens, date, number, empty
 	if tokens[2] == nil 
 		return "The ball request was not formatted properly."
-	elsif !tokens.last.is_a? Integer
+	elsif tokens.last.to_i == 0
 		 return "The time token was not a number."
 	else
 		location = flatten(tokens, tokens.length - 1)
