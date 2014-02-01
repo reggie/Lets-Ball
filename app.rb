@@ -36,6 +36,14 @@ def text message, sender
 	end
 end
 
+def flatten tokens, last
+	result = tokens[1].to_s
+	for n in 2...last
+		result << " " + tokens[n].to_s
+	end
+	return result
+end
+
 def add tokens, found, number, empty
 	if tokens[1] == nil
 		return "No name was given."
@@ -43,12 +51,13 @@ def add tokens, found, number, empty
 		if found
 			return "You are already in the database."
 		else
-			$ballers.insert({"number" => number, "name" => tokens[1], "balling" => "-"})
+			name = flatten(tokens, tokens.length)
+			$ballers.insert({"number" => number, "name" => name, "balling" => "-"})
 			if empty
-				return "#{tokens[1]} was added."
+				return "#{name} was added."
 			else
 				events = listEvents()
-				return "#{tokens[1]} was added.\nThere is an active event:\n#{events}Text \"-y\" to confirm, \"-n\" to deny. "	
+				return "#{name} was added.\nThere is an active event:\n#{events}Text \"-y\" to confirm, \"-n\" to deny. "	
 			end
 		end
 	end
@@ -106,14 +115,6 @@ def listConfirmed
 	else
 		return result
 	end
-end
-
-def flatten tokens, last
-	result = tokens[1].to_s
-	for n in 2...last
-		result << " " + tokens[n].to_s
-	end
-	return result
 end
 
 def makeEvent tokens, date, number, empty
