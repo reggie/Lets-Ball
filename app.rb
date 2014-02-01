@@ -178,7 +178,7 @@ def removeEvent number, empty
 	end
 end
 
-def respond type, empty
+def respond type, empty, number
 	if !empty
 		$ballers.update({"number" => number}, {"$set" => {"balling" => type} })
 		return "Response stored."
@@ -256,9 +256,9 @@ post '/sms' do
 	when "-lb"#List all ball events
 		message = listEvents()
 	when "-y"	#Confirm attendance
-		message = respond("y", empty)	
+		message = respond("y", empty, number)
 	when "-n"	#Deny attendance
-		message = respond("n", empty)
+		message = respond("n", empty, number)
 	when "-c"	#List all confirmed ballers
 		message = listConfirmed()
 	when "-C"	#Clears both databases (for emergency cases)
