@@ -111,7 +111,7 @@ end
 def flatten tokens, last
 	result = tokens[1]
 	for n in 2...last
-		result << tokens[n]
+		result << " " + tokens[n]
 	end
 end
 
