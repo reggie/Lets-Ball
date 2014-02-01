@@ -115,7 +115,7 @@ def flatten tokens, last
 	end
 end
 
-def makeEvent tokens, date, number, empty, name
+def makeEvent tokens, date, number, empty
 	if tokens[2] == nil 
 		return "The ball request was not formatted properly."
 	elsif !tokens.last.is_a? Integer
