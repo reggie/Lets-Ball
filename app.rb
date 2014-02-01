@@ -132,15 +132,13 @@ def makeEvent tokens, date, number, empty
 			end
 		else
 			$events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
-		end
-		if message.empty?
-			name = $ballers.find({"number" => number}).to_a.first["name"]
-			message = "#{name} wants to play basketball at #{location} at #{tokens.last} o'clock.\nText \"-y\" to confirm or \"-n\" to deny."
-			text(message, number)
-			$ballers.update({}, { "$set" => {"balling" => "-"} })
-			$ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
-			return "Ball request: #{location} at #{tokens.last} - created."
-		end
+		end		
+		name = $ballers.find({"number" => number}).to_a.first["name"]
+		message = "#{name} wants to play basketball at #{location} at #{tokens.last} o'clock.\nText \"-y\" to confirm or \"-n\" to deny."
+		text(message, number)
+		$ballers.update({}, { "$set" => {"balling" => "-"} })
+		$ballers.update({"number" => number}, {"$set" => {"balling" => "y"} })
+		return "Ball request: #{location} at #{tokens.last} - created."
 	end
 end
 
