@@ -109,10 +109,11 @@ def listConfirmed
 end
 
 def flatten tokens, last
-	result = tokens[1]
+	result = tokens[1].to_s
 	for n in 2...last
-		result << " " + tokens[n]
+		result << " " + tokens[n].to_s
 	end
+	return result
 end
 
 def makeEvent tokens, date, number, empty
