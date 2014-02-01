@@ -123,7 +123,7 @@ def makeEvent tokens, date, number, empty
 	else
 		location = flatten(tokens, tokens.length - 1)
 		if !empty
-			if $events.find({"date" => date}).to_a[0]["date"] == date
+			if $events.find({"date" => date}).to_a.first["date"] == date
 				return "There is already a balling request for today."
 			else
 				$events.remove
@@ -133,7 +133,7 @@ def makeEvent tokens, date, number, empty
 			$events.insert({"location" => location, "time" => tokens.last, "creator" => number, "date" => date})
 		end
 		if message.empty?
-			name = $ballers.find({"number" => number}).to_a[0]["name"]
+			name = $ballers.find({"number" => number}).to_a.first["name"]
 			message = "#{name} wants to play basketball at #{location} at #{tokens.last} o'clock.\nText \"-y\" to confirm or \"-n\" to deny."
 			text(message, number)
 			$ballers.update({}, { "$set" => {"balling" => "-"} })
