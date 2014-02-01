@@ -196,7 +196,7 @@ def help
 					"\tUpdate Name\n"						+
 					"\t-un <name>\n"						+
 					"\tRemove Baller\n"					+
-					"\t-r <name>\n"							+
+					"\t-r\n"										+
 					"\tList all Ballers\n"			+
 					"\t-l\n"										+
 					"\tBall Request\n"					+
