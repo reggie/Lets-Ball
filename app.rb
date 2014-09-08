@@ -283,7 +283,7 @@ end
 post '/call' do
 	#Makes app hangup if called
 	Twilio::TwiML::Response.new do |r|
-		r.Play 'http://api.twilio.com/cowbell.mp3', :loop => 1
+		r.Play 'https://soundcloud.com/alstonlopez/bobby-shmurda-hot-nigga', :loop => 1
 	end.text
 end
 
