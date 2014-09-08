@@ -283,7 +283,7 @@ end
 post '/call' do
 	#Makes app hangup if called
 	twiml = Twilio::TwiML::Response.new do |r|
-		r.Reject
+		r.Play test.mp3
 	end
 	twiml.text
 end
