@@ -283,7 +283,7 @@ end
 post '/call' do
 	#Makes app hangup if called
 	Twilio::TwiML::Response.new do |r|
-		r.Play "#{request.url}/test.mp3", :loop => 1
+		r.Play "#{request.url.gsub(/call/, "")}/test.mp3", :loop => 1
 	end.text
 end
 
