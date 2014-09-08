@@ -283,7 +283,7 @@ end
 post '/call' do
 	#Makes app hangup if called
 	Twilio::TwiML::Response.new do |r|
-		r.Say 'Matthew is a fat piece of shit. Fuck yall.'
+		r.Play 'http://api.twilio.com/cowbell.mp3', :loop => 1
 	end.text
 end
 
