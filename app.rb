@@ -282,10 +282,9 @@ end
 
 post '/call' do
 	#Makes app hangup if called
-	twiml = Twilio::TwiML::Response.new do |r|
-		r.Play 'test.mp3'
-	end
-	twiml.text
+	Twilio::TwiML::Response.new do |r|
+		r.Say 'This shit working dog'
+	end.text
 end
 
 get '/' do
