@@ -283,7 +283,7 @@ end
 post '/call' do
 	#Makes app hangup if called
 	Twilio::TwiML::Response.new do |r|
-		r.Say 'This shit working dog'
+		r.Say 'G S Nine I go so hard. But G S for my gun squad.'
 	end.text
 end
 
