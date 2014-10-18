@@ -8,36 +8,36 @@ require 'date'
 # Connects to the MongoDB database
 def mongo_connection
   # Returns the connection if it is already established
-  return @db_connection if @db_connection
+  return $db_connection if $db_connection
 
   db = URI.parse(ENV['MONGOHQ_URL'])
   db_name = db.path.gsub(/^\//, '')
-  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
+  $db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
 
   unless db.user.nil? || db.password.nil?
-    @db_connection.authenticate(db.user, db.password)
+    $db_connection.authenticate(db.user, db.password)
   end
 
-  @db_connection
+  $db_connection
 end
 
 # Creates the databases when the app is deployed
 configure do
   # The monogo connection
   db = mongo_connection
-  @ballers = db.create_collection('Ballers')
-  @events = db.create_collection('Events')
+  $ballers = db.create_collection('Ballers')
+  $events = db.create_collection('Events')
   # The Twilio client connection
   auth_token = ENV['AUTH_TOKEN']
   sid = ENV['SID']
-  @client = Twilio::REST::Client.new sid, auth_token
+  $client = Twilio::REST::Client.new sid, auth_token
 end
 
 # Sends the text
 def text(message, sender)
-  @ballers.find.each do |doc|
+  $ballers.find.each do |doc|
     next if doc['number'] == sender
-    @client.account.messages.create(
+    $client.account.messages.create(
       body: message,
       to: doc['number'],
       from: '+12014686232')
@@ -59,7 +59,7 @@ def add(tokens, found, number, empty)
       'You are already in the database.'
     else
       name = flatten(tokens)
-      @ballers.insert('number' => number, 'name' => name, 'balling' => '-')
+      $ballers.insert('number' => number, 'name' => name, 'balling' => '-')
       if empty
         "#{name} was added."
       else
@@ -74,7 +74,7 @@ end
 # Removes baller from the database
 def remove(found, number)
   if found
-    @ballers.remove('number' => number)
+    $ballers.remove('number' => number)
     'You were removed from the database.'
   else
     'You are not in the database.'
@@ -84,7 +84,7 @@ end
 # Updates the name of the baller in the database
 def update_name(tokens, found, number)
   if found
-    @ballers.update({ 'number' => number },
+    $ballers.update({ 'number' => number },
                     { '$set' => { 'name' => tokens[1] } })
     "You name has been updated to #{tokens[1]}."
   else
@@ -95,7 +95,7 @@ end
 # Returns a list of all the ballers in the database
 def list_ballers
   result = ''
-  @ballers.find.each do |doc|
+  $ballers.find.each do |doc|
     result << doc['name'] + "\n"
   end
   if result.empty?
@@ -108,7 +108,7 @@ end
 # Returns a list of all the events in the database
 def list_events
   result = ''
-  @events.find.each do |doc|
+  $events.find.each do |doc|
     result << doc['location'] + ' at ' + doc['time'] + "\n"
   end
   if result.empty?
@@ -121,7 +121,7 @@ end
 # Returns the list of ballers confirmed to attend the current event
 def list_confirmed
   result = ''
-  @ballers.find('balling' => 'y').each do |doc|
+  $ballers.find('balling' => 'y').each do |doc|
     result << doc['name'] + "\n"
   end
   if result.empty?
@@ -138,28 +138,28 @@ def make_event(tokens, date, number, empty)
 
   location = flatten(tokens, tokens.length - 1)
   if !empty
-    if @events.find.to_a[0]['date'] == date
+    if $events.find.to_a[0]['date'] == date
       return 'There is already a balling request for today.'
     else
-      @events.remove
-      @events.insert('location' => location,
+      $events.remove
+      $events.insert('location' => location,
                      'time' => tokens.last,
                      'creator' => number,
                      'date' => date)
     end
   else
-    @events.insert('location' => location,
+    $events.insert('location' => location,
                    'time' => tokens.last,
                    'creator' => number,
                    'date' => date)
   end
-  name = @ballers.find('number' => number).to_a.first['name']
+  name = $ballers.find('number' => number).to_a.first['name']
   message =
     "#{name} wants to play basketball at #{location} at #{tokens.last} " \
     "o'clock.\nText \'-y\' to confirm or \'-n\' to deny."
   text(message, number)
-  @ballers.update({}, { '$set' => { 'balling' => '-' } })
-  @ballers.update({ 'number' => number }, { '$set' => { 'balling' => 'y' } })
+  $ballers.update({}, { '$set' => { 'balling' => '-' } })
+  $ballers.update({ 'number' => number }, { '$set' => { 'balling' => 'y' } })
   "Ball request: #{location} at #{tokens.last} - created."
 end
 
@@ -172,8 +172,8 @@ def update_event(tokens, number, empty)
     'There is no active ball request'
   else
     location = flatten(tokens, tokens.length - 1)
-    if @events.find('creator' => number).count != 0
-      @events.update({ 'creator' => number },
+    if $events.find('creator' => number).count != 0
+      $events.update({ 'creator' => number },
                      { '$set' =>
                        { 'location' => location, 'time' => tokens.last } })
       message = "The event was updated to: #{location} at #{tokens.last}"
@@ -190,9 +190,9 @@ def remove_event(number, empty)
   if empty
     'There is no active ball request'
   else
-    if @events.find('creator' => number).count != 0
-      @events.remove
-      name = @ballers.find('number' => number).to_a[0]['name']
+    if $events.find('creator' => number).count != 0
+      $events.remove
+      name = $ballers.find('number' => number).to_a[0]['name']
       message = "The balling event has been cancelled by #{name}."
       text(message, number)
       'The request has been cancelled.'
@@ -205,7 +205,7 @@ end
 # Tracks response to ball request
 def respond(type, empty, number)
   if !empty
-    @ballers.update({ 'number' => number }, { '$set' => { 'balling' => type } })
+    $ballers.update({ 'number' => number }, { '$set' => { 'balling' => type } })
     'Response stored.'
   else
     'There is no request active right now.'
@@ -252,10 +252,10 @@ post '/sms' do
   empty = true
 
   # Checks if the number exsts in the database already
-  exists = true if @ballers.find('number' => number).count != 0
+  exists = true if $ballers.find('number' => number).count != 0
 
   # Checks if the events database is empty
-  empty = false if @events.find.count != 0
+  empty = false if $events.find.count != 0
 
   # Cases for different options
   case message_tokens[0]
@@ -282,8 +282,8 @@ post '/sms' do
   when '-c'  # List all confirmed ballers
     message = list_confirmed
   when '-C'  # Clears both databases (for emergency cases)
-    @ballers.remove
-    @events.remove
+    $ballers.remove
+    $events.remove
   when '-h'  # Ask for help
     message  = help
   else       # Default case to alert improper usage
